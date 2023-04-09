@@ -1,5 +1,5 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+
 import { ImageItem, Image } from './ImageGalleryItem.styled';
 export const ImageGalleryItem = ({ images, onShowhingLargeImg, onClick }) => {
   return (
@@ -16,7 +16,4 @@ export const ImageGalleryItem = ({ images, onShowhingLargeImg, onClick }) => {
   );
 };
 
-// ImageGalleryItem.propTypes = {
-//   webformatURL: PropTypes.string.isRequired,
-//   // largeImageURL: PropTypes.string.isRequired,
-// };
+
