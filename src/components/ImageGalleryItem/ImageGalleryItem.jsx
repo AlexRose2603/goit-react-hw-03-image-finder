@@ -1,17 +1,22 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-
-export const ImageGalleryItem = () => {
-  const { webformatURL } = this.props;
-
+// import PropTypes from 'prop-types';
+import { ImageItem, Image } from './ImageGalleryItem.styled';
+export const ImageGalleryItem = ({ images, onShowhingLargeImg, onClick }) => {
   return (
-    <li className="gallery-item">
-      <img src={webformatURL} alt="" />
-    </li>
+    <ImageItem>
+      <Image
+        src={images.webformatURL}
+        alt={images.tags}
+        onClick={() => {
+          onShowhingLargeImg(images);
+          onClick();
+        }}
+      />
+    </ImageItem>
   );
 };
 
-ImageGalleryItem.propTypes = {
-  webformatURL: PropTypes.string.isRequired,
-  largeImageURL: PropTypes.string.isRequired,
-};
+// ImageGalleryItem.propTypes = {
+//   webformatURL: PropTypes.string.isRequired,
+//   // largeImageURL: PropTypes.string.isRequired,
+// };

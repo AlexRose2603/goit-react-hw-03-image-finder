@@ -1,31 +1,30 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { GalleryList } from './ImageGallery.styled';
+// import PropTypes from 'prop-types';
 import { ImageGalleryItem } from 'components/ImageGalleryItem/ImageGalleryItem';
 
-export const ImageGallery = ({ images, onClick }) => {
+export const ImageGallery = ({ images, onEnlargingImage, onClick }) => {
+  console.log(images);
   return (
-    <ul>
-      {images.map(({ id, webformatURL, largeImageURL, tags }) => {
-        return (
-          <ImageGalleryItem
-            key={id}
-            webformatURL={webformatURL}
-            largeImageURL={largeImageURL}
-            tags={tags}
-            onClick={onClick}
-          />
-        );
-      })}
-    </ul>
+    <GalleryList>
+      {images.map(image => (
+        <ImageGalleryItem
+          key={image.id}
+          images={image}
+          onShowhingLargeImg={onEnlargingImage}
+          onClick={onClick}
+        />
+      ))}
+    </GalleryList>
   );
 };
 
-ImageGallery.propTypes = {
-  images: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.number.isRequired,
-      webformatURL: PropTypes.string.isRequired,
-      largeImageURL: PropTypes.string.isRequired,
-    })
-  ),
-};
+// ImageGallery.propTypes = {
+//   images: PropTypes.arrayOf(
+//     PropTypes.exact({
+//       id: PropTypes.number.isRequired,
+//       webformatURL: PropTypes.string.isRequired,
+//       largeImageURL: PropTypes.string.isRequired,
+//     })
+//   ),
+// };

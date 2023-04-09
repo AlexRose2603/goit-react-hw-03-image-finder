@@ -5,62 +5,81 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
-
-// import { Modal } from './Modal/Modal';
+import { Modal } from './Modal/Modal';
 export class App extends Component {
   state = {
-    value: '',
+    query: '',
     images: [],
     page: 1,
-    totalHits: 0,
     isLoading: false,
-    isSpinnerLoading: false,
+    isBtnVisible: false,
     isModalOpen: false,
+    modalPicture: null,
   };
-  submitSearchQuery = value => {
-    this.setState({ value });
-  };
-  async componentDidUpdate(_, prevState) {
-    const { value, page } = this.state;
-    if (prevState.value !== value || prevState.page !== page) {
-      try {
-        this.setState({ isLoading: true });
 
-        const { totalHits, hits } = await fetchImages(value, page);
-        if (totalHits === 0) {
-          Notiflix.Notify.info('Nothing was found on your request');
-          this.setState({ isLoading: false });
-          return;
-        }
-
-        this.setState(prevState => ({
-          images: page === 1 ? hits : [...prevState.images, ...hits],
-          totalHits:
-            page === 1
-              ? totalHits - hits.length
-              : totalHits - [...prevState.images, ...hits].length,
-        }));
-        this.setState({ isLoading: false });
-      } catch (error) {
-        Notiflix.Notify.failure(`Oops! Something went wrong! ${error}`);
-      }
+  componentDidUpdate(_, prevState) {
+    const { query, page } = this.state;
+    if (prevState.query !== query || prevState.page !== page) {
+      this.onGetImages(query, page);
     }
   }
+  async onGetImages(query, page) {
+    this.setState({ isLoading: true });
+    try {
+      const { totalHits, hits } = await fetchImages(query, page);
+      console.log(totalHits);
+      if (totalHits === 0) {
+        Notiflix.Notify.info('Nothing was found on your request');
+        this.setState({ isLoading: false });
+        return;
+      }
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+      }));
+    } catch (error) {
+      Notiflix.Notify.failure(`Oops! Something went wrong! ${error}`);
+    } finally {
+      this.setState({ isLoading: false });
+      this.setState({ isBtnVisible: true });
+    }
+  }
+
+  onSubmit = value => {
+    this.setState({ query: value, page: 1, images: [] });
+    if (this.state.query === '') {
+      this.setState({ isLoading: false });
+      Notiflix.Notify.info('Fill the search form');
+    }
+  };
+
   onLoadMore = () => {
     this.setState(prevState => ({ page: prevState.page + 1 }));
   };
+
   toggleModal = () => {
     this.setState(state => ({ isModalOpen: !state.isModalOpen }));
   };
+  modalImg = img => {
+    this.setState({ modalPicture: img });
+  };
   render() {
-    const { images, isLoading } = this.state;
+    const { images, isLoading, isBtnVisible, isModalOpen, modalPicture } =
+      this.state;
     return (
       <>
-        <Searchbar submitSearchQuery={this.submitSearchQuery} />
-        {images && <ImageGallery images={images} />}
-        <Button onloadMore={this.onLoadMore} />
+        <Searchbar onSubmit={this.onSubmit} />
+        {images && (
+          <ImageGallery
+            images={images}
+            onEnlargingImage={this.modalImg}
+            onClick={this.toggleModal}
+          />
+        )}
+        {isBtnVisible && <Button onClick={this.onLoadMore}>Load more</Button>}
         {isLoading && <Loader />}
-        {/* <Modal /> */}
+        {isModalOpen && (
+          <Modal onClose={this.toggleModal} onShowImg={modalPicture} />
+        )}
       </>
     );
   }

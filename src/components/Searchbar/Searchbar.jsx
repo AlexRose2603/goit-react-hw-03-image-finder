@@ -3,17 +3,16 @@ import PropTypes from 'prop-types';
 import { Container, Form, SearchInput, SearchBtn } from './Searchbar.styled';
 export class Searchbar extends Component {
   state = {
-    query: '',
+    value: '',
   };
 
   handleChange = event => {
-    this.setState({ query: event.target.query });
-    console.log(this.state.query);
+    this.setState({ value: event.target.value });
   };
   handleSubmit = event => {
     event.preventDefault();
-    this.props.submitSearchQuery(this.state.query);
-    console.log(event);
+    this.props.onSubmit(this.state.value);
+    this.setState({ value: '' });
   };
   render() {
     return (
@@ -22,9 +21,9 @@ export class Searchbar extends Component {
           <SearchInput
             type="text"
             autocomplete="off"
-            autofocus
+            autoFocus
             placeholder="Search images and photos"
-            value={this.state.query}
+            value={this.state.value}
             onChange={this.handleChange}
           />
           <SearchBtn type="submit">Search</SearchBtn>
