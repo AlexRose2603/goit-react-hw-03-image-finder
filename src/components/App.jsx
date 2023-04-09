@@ -24,14 +24,20 @@ export class App extends Component {
     }
   }
   async onGetImages(query, page) {
-    this.setState({ isLoading: true });
+    this.setState({ isLoading: true, isBtnVisible: false });
     try {
       const { totalHits, hits } = await fetchImages(query, page);
-      console.log(totalHits);
+      if (this.state.query === '') {
+        this.setState({ isLoading: false, isBtnVisible: false });
+        Notiflix.Notify.info('Fill the search form');
+      }
       if (totalHits === 0) {
         Notiflix.Notify.info('Nothing was found on your request');
-        this.setState({ isLoading: false });
+        this.setState({ isLoading: false, isBtnVisible: false });
         return;
+      } else if (hits === totalHits) {
+        Notiflix.Notify.info('These are all the images we found');
+        this.setState({ isBtnVisible: false });
       }
       this.setState(prevState => ({
         images: [...prevState.images, ...hits],
@@ -46,10 +52,6 @@ export class App extends Component {
 
   onSubmit = value => {
     this.setState({ query: value, page: 1, images: [] });
-    if (this.state.query === '') {
-      this.setState({ isLoading: false });
-      Notiflix.Notify.info('Fill the search form');
-    }
   };
 
   onLoadMore = () => {
