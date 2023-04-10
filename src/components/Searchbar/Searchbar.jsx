@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
 import { Container, Form, SearchInput, SearchBtn } from './Searchbar.styled';
 export class Searchbar extends Component {
   state = {

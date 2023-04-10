@@ -13,6 +13,7 @@ export class App extends Component {
     page: 1,
     isLoading: false,
     isBtnVisible: false,
+
     isModalOpen: false,
     modalPicture: null,
   };
@@ -33,7 +34,8 @@ export class App extends Component {
       }
       if (totalHits === 0) {
         Notiflix.Notify.info('Nothing was found on your request');
-        this.setState({ isLoading: false, isBtnVisible: false });
+        this.setState({ isLoading: false });
+        this.setState({ isBtnVisible: false });
         return;
       } else if (hits === totalHits) {
         Notiflix.Notify.info('These are all the images we found');
@@ -42,11 +44,10 @@ export class App extends Component {
       this.setState(prevState => ({
         images: [...prevState.images, ...hits],
       }));
-    } catch (error) {
-      Notiflix.Notify.failure(`Oops! Something went wrong! ${error}`);
-    } finally {
       this.setState({ isLoading: false });
       this.setState({ isBtnVisible: true });
+    } catch (error) {
+      Notiflix.Notify.failure(`Oops! Something went wrong! ${error}`);
     }
   }
 
