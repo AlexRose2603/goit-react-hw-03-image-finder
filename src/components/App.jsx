@@ -28,9 +28,10 @@ export class App extends Component {
     this.setState({ isLoading: true, isBtnVisible: false });
     try {
       const { totalHits, hits } = await fetchImages(query, page);
-      if (this.state.query === '') {
+      if (this.state.query.trim() === '') {
         this.setState({ isLoading: false, isBtnVisible: false });
         Notiflix.Notify.info('Fill the search form');
+        return;
       }
       if (totalHits === 0) {
         Notiflix.Notify.info('Nothing was found on your request');
